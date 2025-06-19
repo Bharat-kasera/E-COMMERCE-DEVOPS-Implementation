@@ -1,6 +1,6 @@
 # <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
 
-**Note:** This project is a fork of `opentelemetry-demo`. Thanks to the team and contributors for opensourcing this wonderful demo project. Definitely one of the best on internet.
+**Note:** This project is a fork of `opentelemetry-demo`. Thanks to the team and contributors for opensourcing this wonderful demo project to implement or practice devops.
 ## Web store
 
 | Home Page                     | Checkout Screen               |
@@ -21,7 +21,28 @@ Our goals are threefold:
 - **Living Laboratory**: Create a living example for OpenTelemetry contributors to use for testing new versions of the API, SDK, and other components or enhancements
 
 We've already made [huge progress](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CHANGELOG.md), and development is ongoing. We hope to represent the full feature set of OpenTelemetry across its languages in the future.
+## 🚀 Quick Start
 
+You can be up and running with the demo in a few minutes. Check out the docs for your preferred deployment method:
+
+- **[Docker Deployment](https://opentelemetry.io/docs/demo/docker_deployment/)** - Quick local setup
+- **[Kubernetes Deployment](https://opentelemetry.io/docs/demo/kubernetes_deployment/)** - Production-ready orchestration
+
+## 📚 Documentation
+
+For detailed documentation, see [Demo Documentation][docs]. If you're curious about a specific feature, the [docs landing page][docs] can point you in the right direction.
+
+---
+
+## 🎯 Key Technical Highlights
+
+- **Multi-language Architecture**: Demonstrates OpenTelemetry across 11+ programming languages
+- **Real-world Patterns**: Implements common e-commerce microservice patterns
+- **Comprehensive Observability**: Full telemetry coverage including traces, metrics, and logs  
+- **Production-ready**: Uses industry-standard technologies (Kafka, Valkey, Envoy, etc.)
+- **Load Testing**: Built-in realistic traffic simulation with Locust
+
+[docs]: https://opentelemetry.io/docs/demo/
 ## 🏗️ Architecture Overview
 
 OpenTelemetry Demo is composed of **microservices written in different programming languages** that communicate over **gRPC and HTTP**, complemented by a **load generator using Locust** to simulate realistic user traffic.
@@ -158,31 +179,51 @@ classDef typescript fill:#e98516,color:black;
 | **[shipping](shipping/)** | Rust | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock/) |
 | **[react-native-app](react-native-app/)** | TypeScript | React Native mobile application that provides a UI on top of the shopping services |
 
-## 🚀 Quick Start
+## 🐳 Running the Project Locally
 
-You can be up and running with the demo in a few minutes. Check out the docs for your preferred deployment method:
+This project can be run locally on your personal machine or an EC2 instance using **Docker Compose**. Docker Compose is the preferred method for managing multi-service applications like this e-commerce project, which includes frontend, backend, and database services.
 
-- **[Docker Deployment](https://opentelemetry.io/docs/demo/docker_deployment/)** - Quick local setup
-- **[Kubernetes Deployment](https://opentelemetry.io/docs/demo/kubernetes_deployment/)** - Production-ready orchestration
+Using Docker Compose, you can easily spin up all the necessary containers with a single command, ensuring proper startup order and network configuration across services. Even if you're new to Docker Compose, you only need to execute a simple command to get the project running initially.
 
-## 📚 Documentation
+This approach simulates a real development environment and helps you understand the workflow of the project by exploring it hands-on in your browser. It also aligns with industry best practices for running complex applications locally and supports integration within CI/CD pipelines.
 
-For detailed documentation, see [Demo Documentation][docs]. If you're curious about a specific feature, the [docs landing page][docs] can point you in the right direction.
+### Prerequisites
 
-## 🤝 Contributing
+- Docker and Docker Compose installed on your machine or EC2 instance
+- Git to clone the repository
 
-If you'd like to help (**which we would love**), check out our [contributing guidance](./CONTRIBUTING.md).
+### Quick Start
 
-If you'd like to extend this demo or maintain a fork of it, read our [fork guidance](https://opentelemetry.io/docs/demo/forking/).
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd <project-directory>
+   ```
 
----
+2. **Run the project with Docker Compose:**
+   ```bash
+   docker compose up
+   ```
 
-## 🎯 Key Technical Highlights
+3. **Access the application** through your web browser as per the provided URLs in the project documentation.
 
-- **Multi-language Architecture**: Demonstrates OpenTelemetry across 11+ programming languages
-- **Real-world Patterns**: Implements common e-commerce microservice patterns
-- **Comprehensive Observability**: Full telemetry coverage including traces, metrics, and logs  
-- **Production-ready**: Uses industry-standard technologies (Kafka, Valkey, Envoy, etc.)
-- **Load Testing**: Built-in realistic traffic simulation with Locust
+This setup will launch all components (frontend, backend, databases) with correct dependencies, giving you a seamless local development experience.
 
-[docs]: https://opentelemetry.io/docs/demo/
+## 🌐 Accessing the Project on the Browser
+
+By default, this project runs on port **8080** and can be accessed via a web browser using the instance's public IP followed by `:8080` (e.g., `http://<your-public-ip>:8080`). Note that it is important to use `http://` explicitly, as the project does not use HTTPS by default.
+
+### ⚠️ Important: Configure AWS Security Groups
+
+AWS EC2 instances come with attached **Security Groups**, which act as virtual firewalls controlling inbound and outbound traffic. By default, these security groups block all inbound traffic except for specific ports like **22 (SSH)** used for secure shell connections.
+
+If you cannot access the project on port 8080, it is likely because this port is not open in your instance's security group inbound rules. To fix this:
+
+1. Navigate to your AWS EC2 dashboard
+2. Find the security group associated with your instance
+3. Edit the **Inbound Rules** to allow TCP traffic on port **8080** from your preferred sources, such as:
+   - Anywhere (`0.0.0.0/0`) if you want public access, or
+   - Your specific IP address or IP range for restricted access
+   
+Once you save these rules, refresh your browser at `http://<your-public-ip>:8080` to access the application.
+
