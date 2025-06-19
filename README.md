@@ -38,7 +38,6 @@ For detailed documentation, see [Demo Documentation][docs]. If you're curious ab
 
 - **Multi-language Architecture**: Demonstrates OpenTelemetry across 11+ programming languages
 - **Real-world Patterns**: Implements common e-commerce microservice patterns
-- **Comprehensive Observability**: Full telemetry coverage including traces, metrics, and logs  
 - **Production-ready**: Uses industry-standard technologies (Kafka, Valkey, Envoy, etc.)
 - **Load Testing**: Built-in realistic traffic simulation with Locust
 
