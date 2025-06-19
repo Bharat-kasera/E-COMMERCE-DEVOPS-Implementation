@@ -1,141 +1,189 @@
-**Note:** This project is a fork of `opentelemetry-demo`. Thanks to the team and contributors for opensourcing this wonderful demo project. Definitely one of the best on internet.
-
-<!-- markdownlint-disable-next-line -->
 # <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
 
-[![Slack](https://img.shields.io/badge/slack-@cncf/otel/demo-brightgreen.svg?logo=slack)](https://cloud-native.slack.com/archives/C03B4CWV4DA)
-[![Version](https://img.shields.io/github/v/release/open-telemetry/opentelemetry-demo?color=blueviolet)](https://github.com/open-telemetry/opentelemetry-demo/releases)
-[![Commits](https://img.shields.io/github/commits-since/open-telemetry/opentelemetry-demo/latest?color=ff69b4&include_prereleases)](https://github.com/open-telemetry/opentelemetry-demo/graphs/commit-activity)
-[![Downloads](https://img.shields.io/docker/pulls/otel/demo)](https://hub.docker.com/r/otel/demo)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/open-telemetry/opentelemetry-demo/blob/main/LICENSE)
-[![Integration Tests](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml/badge.svg)](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml)
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/opentelemetry-demo)](https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-demo)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9247/badge)](https://www.bestpractices.dev/en/projects/9247)
+**Note:** This project is a fork of `opentelemetry-demo`. Thanks to the team and contributors for opensourcing this wonderful demo project. Definitely one of the best on internet.
+
+## 🚀 Live Demo Showcase
+
+**Webstore Demo in Action:** 
+[🎥 Watch the Complete Demo](https://res.cloudinary.com/dwgxqgsov/video/upload/v1750324201/0619_auqese.mp4)
+
+---
 
 ## Welcome to the OpenTelemetry Astronomy Shop Demo
 
-This repository contains the OpenTelemetry Astronomy Shop, a microservice-based
-distributed system intended to illustrate the implementation of OpenTelemetry in
-a near real-world environment.
+This repository contains the OpenTelemetry Astronomy Shop, a microservice-based distributed system intended to illustrate the implementation of OpenTelemetry in a near real-world environment.
+
+### 🎯 Project Goals
 
 Our goals are threefold:
 
-- Provide a realistic example of a distributed system that can be used to
-  demonstrate OpenTelemetry instrumentation and observability.
-- Build a base for vendors, tooling authors, and others to extend and
-  demonstrate their OpenTelemetry integrations.
-- Create a living example for OpenTelemetry contributors to use for testing new
-  versions of the API, SDK, and other components or enhancements.
+- **Real-world Demonstration**: Provide a realistic example of a distributed system that can be used to demonstrate OpenTelemetry instrumentation and observability
+- **Extensible Foundation**: Build a base for vendors, tooling authors, and others to extend and demonstrate their OpenTelemetry integrations
+- **Living Laboratory**: Create a living example for OpenTelemetry contributors to use for testing new versions of the API, SDK, and other components or enhancements
 
-We've already made [huge
-progress](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CHANGELOG.md),
-and development is ongoing. We hope to represent the full feature set of
-OpenTelemetry across its languages in the future.
+We've already made [huge progress](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CHANGELOG.md), and development is ongoing. We hope to represent the full feature set of OpenTelemetry across its languages in the future.
 
-If you'd like to help (**which we would love**), check out our [contributing
-guidance](./CONTRIBUTING.md).
+## 🏗️ Architecture Overview
 
-If you'd like to extend this demo or maintain a fork of it, read our
-[fork guidance](https://opentelemetry.io/docs/demo/forking/).
+OpenTelemetry Demo is composed of **microservices written in different programming languages** that communicate over **gRPC and HTTP**, complemented by a **load generator using Locust** to simulate realistic user traffic.
 
-## Quick start
+### System Architecture Diagram
 
-You can be up and running with the demo in a few minutes. Check out the docs for
-your preferred deployment method:
+```mermaid
+graph TD
+subgraph Service Diagram
+accounting(Accounting):::dotnet
+ad(Ad):::java
+cache[(Cache<br/>&#40Valkey&#41)]
+cart(Cart):::dotnet
+checkout(Checkout):::golang
+currency(Currency):::cpp
+email(Email):::ruby
+flagd(Flagd):::golang
+flagd-ui(Flagd-ui):::typescript
+fraud-detection(Fraud Detection):::kotlin
+frontend(Frontend):::typescript
+frontend-proxy(Frontend Proxy <br/>&#40Envoy&#41):::cpp
+image-provider(Image Provider <br/>&#40nginx&#41):::cpp
+load-generator([Load Generator]):::python
+payment(Payment):::javascript
+product-catalog(Product Catalog):::golang
+quote(Quote):::php
+recommendation(Recommendation):::python
+shipping(Shipping):::rust
+queue[(queue<br/>&#40Kafka&#41)]:::java
+react-native-app(React Native App):::typescript
 
-- [Docker](https://opentelemetry.io/docs/demo/docker_deployment/)
-- [Kubernetes](https://opentelemetry.io/docs/demo/kubernetes_deployment/)
+ad ---->|gRPC| flagd
 
-## Documentation
+checkout -->|gRPC| currency
+checkout -->|gRPC| cart
+checkout -->|TCP| queue
 
-For detailed documentation, see [Demo Documentation][docs]. If you're curious
-about a specific feature, the [docs landing page][docs] can point you in the
-right direction.
+cart --> cache
+cart -->|gRPC| flagd
 
-## Demos featuring the Astronomy Shop
+checkout -->|gRPC| payment
+checkout --->|HTTP| email
+checkout -->|gRPC| product-catalog
+checkout -->|HTTP| shipping
 
-We welcome any vendor to fork the project to demonstrate their services and
-adding a link below. The community is committed to maintaining the project and
-keeping it up to date for you.
+fraud-detection -->|gRPC| flagd
 
-|                           |                |                                  |
-|---------------------------|----------------|----------------------------------|
-| [AlibabaCloud LogService] | [Elastic]      | [OpenSearch]                     |
-| [AppDynamics]             | [Google Cloud] | [Sentry]                         |
-| [Aspecto]                 | [Grafana Labs] | [ServiceNow Cloud Observability] |
-| [Axiom]                   | [Guance]       | [Splunk]                         |
-| [Axoflow]                 | [Honeycomb.io] | [Sumo Logic]                     |
-| [Azure Data Explorer]     | [Instana]      | [TelemetryHub]                   |
-| [Coralogix]               | [Kloudfuse]    | [Teletrace]                      |
-| [Dash0]                   | [Liatrio]      | [Tracetest]                      |
-| [Datadog]                 | [Logz.io]      | [Uptrace]                        |
-| [Dynatrace]               | [New Relic]    |                                  |
+frontend -->|gRPC| ad
+frontend -->|gRPC| currency
+frontend -->|gRPC| cart
+frontend -->|gRPC| checkout
+frontend -->|HTTP| shipping
+frontend ---->|gRPC| recommendation
+frontend -->|gRPC| product-catalog
 
-## Contributing
+frontend-proxy -->|gRPC| flagd
+frontend-proxy -->|HTTP| frontend
+frontend-proxy -->|HTTP| flagd-ui
+frontend-proxy -->|HTTP| image-provider
 
-To get involved with the project see our [CONTRIBUTING](CONTRIBUTING.md)
-documentation. Our [SIG Calls](CONTRIBUTING.md#join-a-sig-call) are every other
-Monday at 8:30 AM PST and anyone is welcome.
+payment -->|gRPC| flagd
 
-## Project leadership
+queue -->|TCP| accounting
+queue -->|TCP| fraud-detection
 
-[Maintainers](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#maintainer)
-([@open-telemetry/demo-maintainers](https://github.com/orgs/open-telemetry/teams/demo-maintainers)):
+recommendation -->|gRPC| flagd
+recommendation -->|gRPC| product-catalog
 
-- [Juliano Costa](https://github.com/julianocosta89), Datadog
-- [Mikko Viitanen](https://github.com/mviitane), Dynatrace
-- [Pierre Tessier](https://github.com/puckpuck), Honeycomb
+shipping -->|HTTP| quote
 
-[Approvers](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver)
-([@open-telemetry/demo-approvers](https://github.com/orgs/open-telemetry/teams/demo-approvers)):
+Internet -->|HTTP| frontend-proxy
+load-generator -->|HTTP| frontend-proxy
+react-native-app -->|HTTP| frontend-proxy
+end
 
-- [Cedric Ziel](https://github.com/cedricziel) Grafana Labs
-- [Penghan Wang](https://github.com/wph95), AppDynamics
-- [Reiley Yang](https://github.com/reyang), Microsoft
-- [Roger Coll](https://github.com/rogercoll), Elastic
-- [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
+classDef dotnet fill:#178600,color:white;
+classDef cpp fill:#f34b7d,color:white;
+classDef golang fill:#00add8,color:black;
+classDef java fill:#b07219,color:white;
+classDef javascript fill:#f1e05a,color:black;
+classDef kotlin fill:#560ba1,color:white;
+classDef php fill:#4f5d95,color:white;
+classDef python fill:#3572A5,color:white;
+classDef ruby fill:#701516,color:white;
+classDef rust fill:#dea584,color:black;
+classDef typescript fill:#e98516,color:black;
+```
+```mermaid
+graph TD
+subgraph Service Legend
+  dotnetsvc(.NET):::dotnet
+  cppsvc(C++):::cpp
+  golangsvc(Go):::golang
+  javasvc(Java):::java
+  javascriptsvc(JavaScript):::javascript
+  kotlinsvc(Kotlin):::kotlin
+  phpsvc(PHP):::php
+  pythonsvc(Python):::python
+  rubysvc(Ruby):::ruby
+  rustsvc(Rust):::rust
+  typescriptsvc(TypeScript):::typescript
+end
 
-Emeritus:
+classDef dotnet fill:#178600,color:white;
+classDef cpp fill:#f34b7d,color:white;
+classDef golang fill:#00add8,color:black;
+classDef java fill:#b07219,color:white;
+classDef javascript fill:#f1e05a,color:black;
+classDef kotlin fill:#560ba1,color:white;
+classDef php fill:#4f5d95,color:white;
+classDef python fill:#3572A5,color:white;
+classDef ruby fill:#701516,color:white;
+classDef rust fill:#dea584,color:black;
+classDef typescript fill:#e98516,color:black;
+```
 
-- [Austin Parker](https://github.com/austinlparker)
-- [Carter Socha](https://github.com/cartersocha)
-- [Michael Maxwell](https://github.com/mic-max)
-- [Morgan McLean](https://github.com/mtwo)
+## 🛠️ Services Overview
 
-### Thanks to all the people who have contributed
+| Service | Language | Description |
+|---------|----------|-------------|
+| **[accounting](accounting/)** | .NET | Processes incoming orders and count the sum of all orders (mock/) |
+| **[ad](ad/)** | Java | Provides text ads based on given context words |
+| **[cart](cart/)** | .NET | Stores the items in the user's shopping cart in Valkey and retrieves it |
+| **[checkout](checkout/)** | Go | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification |
+| **[currency](currency/)** | C++ | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service |
+| **[email](email/)** | Ruby | Sends users an order confirmation email (mock/) |
+| **[fraud-detection](fraud-detection/)** | Kotlin | Analyzes incoming orders and detects fraud attempts (mock/) |
+| **[frontend](frontend/)** | TypeScript | Exposes an HTTP server to serve the website. Does not require sign up / login and generates session IDs for all users automatically |
+| **[load-generator](load-generator/)** | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend |
+| **[payment](payment/)** | JavaScript | Charges the given credit card info (mock/) with the given amount and returns a transaction ID |
+| **[product-catalog](product-catalog/)** | Go | Provides the list of products from a JSON file and ability to search products and get individual products |
+| **[quote](quote/)** | PHP | Calculates the shipping costs, based on the number of items to be shipped |
+| **[recommendation](recommendation/)** | Python | Recommends other products based on what's given in the cart |
+| **[shipping](shipping/)** | Rust | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock/) |
+| **[react-native-app](react-native-app/)** | TypeScript | React Native mobile application that provides a UI on top of the shopping services |
 
-[![contributors](https://contributors-img.web.app/image?repo=open-telemetry/opentelemetry-demo)](https://github.com/open-telemetry/opentelemetry-demo/graphs/contributors)
+## 🚀 Quick Start
+
+You can be up and running with the demo in a few minutes. Check out the docs for your preferred deployment method:
+
+- **[Docker Deployment](https://opentelemetry.io/docs/demo/docker_deployment/)** - Quick local setup
+- **[Kubernetes Deployment](https://opentelemetry.io/docs/demo/kubernetes_deployment/)** - Production-ready orchestration
+
+## 📚 Documentation
+
+For detailed documentation, see [Demo Documentation][docs]. If you're curious about a specific feature, the [docs landing page][docs] can point you in the right direction.
+
+## 🤝 Contributing
+
+If you'd like to help (**which we would love**), check out our [contributing guidance](./CONTRIBUTING.md).
+
+If you'd like to extend this demo or maintain a fork of it, read our [fork guidance](https://opentelemetry.io/docs/demo/forking/).
+
+---
+
+## 🎯 Key Technical Highlights
+
+- **Multi-language Architecture**: Demonstrates OpenTelemetry across 11+ programming languages
+- **Real-world Patterns**: Implements common e-commerce microservice patterns
+- **Comprehensive Observability**: Full telemetry coverage including traces, metrics, and logs  
+- **Production-ready**: Uses industry-standard technologies (Kafka, Valkey, Envoy, etc.)
+- **Load Testing**: Built-in realistic traffic simulation with Locust
 
 [docs]: https://opentelemetry.io/docs/demo/
-
-<!-- Links for Demos featuring the Astronomy Shop section -->
-
-[AlibabaCloud LogService]: https://github.com/aliyun-sls/opentelemetry-demo
-[AppDynamics]: https://www.appdynamics.com/blog/cloud/how-to-observe-opentelemetry-demo-app-in-appdynamics-cloud/
-[Aspecto]: https://github.com/aspecto-io/opentelemetry-demo
-[Axiom]: https://play.axiom.co/axiom-play-qf1k/dashboards/otel.traces.otel-demo-traces
-[Axoflow]: https://axoflow.com/opentelemetry-support-in-more-detail-in-axosyslog-and-syslog-ng/
-[Azure Data Explorer]: https://github.com/Azure/Azure-kusto-opentelemetry-demo
-[Coralogix]: https://coralogix.com/blog/configure-otel-demo-send-telemetry-data-coralogix
-[Dash0]: https://github.com/dash0hq/opentelemetry-demo
-[Datadog]: https://docs.datadoghq.com/opentelemetry/guide/otel_demo_to_datadog
-[Dynatrace]: https://www.dynatrace.com/news/blog/opentelemetry-demo-application-with-dynatrace/
-[Elastic]: https://github.com/elastic/opentelemetry-demo
-[Google Cloud]: https://github.com/GoogleCloudPlatform/opentelemetry-demo
-[Grafana Labs]: https://github.com/grafana/opentelemetry-demo
-[Guance]: https://github.com/GuanceCloud/opentelemetry-demo
-[Honeycomb.io]: https://github.com/honeycombio/opentelemetry-demo
-[Instana]: https://github.com/instana/opentelemetry-demo
-[Kloudfuse]: https://github.com/kloudfuse/opentelemetry-demo
-[Liatrio]: https://github.com/liatrio/opentelemetry-demo
-[Logz.io]: https://logz.io/learn/how-to-run-opentelemetry-demo-with-logz-io/
-[New Relic]: https://github.com/newrelic/opentelemetry-demo
-[OpenSearch]: https://github.com/opensearch-project/opentelemetry-demo
-[Sentry]: https://github.com/getsentry/opentelemetry-demo
-[ServiceNow Cloud Observability]: https://docs.lightstep.com/otel/quick-start-operator#send-data-from-the-opentelemetry-demo
-[Splunk]: https://github.com/signalfx/opentelemetry-demo
-[Sumo Logic]: https://www.sumologic.com/blog/common-opentelemetry-demo-application/
-[TelemetryHub]: https://github.com/TelemetryHub/opentelemetry-demo/tree/telemetryhub-backend
-[Teletrace]: https://github.com/teletrace/opentelemetry-demo
-[Tracetest]: https://github.com/kubeshop/opentelemetry-demo
-[Uptrace]: https://github.com/uptrace/uptrace/tree/master/example/opentelemetry-demo
