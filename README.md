@@ -1,16 +1,15 @@
 # <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
 
 **Note:** This project is a fork of `opentelemetry-demo`. Thanks to the team and contributors for opensourcing this wonderful demo project. Definitely one of the best on internet.
+## Web store
 
-## 🚀 Live Demo Showcase
+| Home Page                     | Checkout Screen               |
+| ----------------------------- | ----------------------------- |
+| ![frontend-1](docs/demo/screenshots/frontend-1.png) | ![frontend-2](docs/demo/screenshots/frontend-2.png) |
 
-**Webstore Demo in Action:** 
+## 🚀 Application Demo Showcase
 [🎥 Watch the Complete Demo](https://res.cloudinary.com/dwgxqgsov/video/upload/v1750324201/0619_auqese.mp4)
-
 ---
-
-## Welcome to the OpenTelemetry Astronomy Shop Demo
-
 This repository contains the OpenTelemetry Astronomy Shop, a microservice-based distributed system intended to illustrate the implementation of OpenTelemetry in a near real-world environment.
 
 ### 🎯 Project Goals
