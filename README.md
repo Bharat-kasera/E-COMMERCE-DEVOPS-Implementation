@@ -226,3 +226,59 @@ If you cannot access the project on port 8080, it is likely because this port is
    
 Once you save these rules, refresh your browser at `http://<your-public-ip>:8080` to access the application.
 
+## 🐳 Containerization of Services
+
+Ichoose to containerize microservices by starting with representative services built in Go, Java, and Python.
+
+### Starting with Go-based Product Catalog Service: 
+The containerization workflow involves:
+
+1. **Accessing the environment**: Log in to the provisioned EC2 instance as your containerization workspace
+2. **Navigating to the service repository**: Locate the Go service source code within the mono repo under the `/src/productcatalog` directory
+3. **Building the service binary**: Before crafting the Dockerfile, it is crucial to build the Go binary to confirm the service compiles and runs as expected outside of a container
+4. **Creating a Dockerfile**: Once the binary works correctly, you write the Dockerfile to containerize the service—packaging the executable and defining the container runtime environment
+
+## 🏗️ Docker Setup - Product Catalog
+
+**Multi-stage build** approach using `golang:1.22-alpine`:
+
+* The **first stage** uses the official `golang:1.22-alpine` image as the builder environment. It downloads project dependencies with `go mod download` and compiles the application binary using `go build`
+* The **final stage** copies only the compiled binary into a minimal base image, keeping the final container lightweight and secure
+
+The Dockerfile also sets a working directory to organize the build context and leverages Go modules for efficient, reproducible builds. This approach ensures faster image builds, smaller image sizes, and improved security by excluding unnecessary build tools and source files from the runtime image.
+
+### Dockerfile
+
+```dockerfile
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /usr/src/app/
+
+# Use Go build cache for dependencies
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    mkdir -p /root/.cache/go-build
+
+# Copy
+COPY go.mod go.sum ./
+
+# Download
+RUN go mod download
+
+# Copy the rest of the source code
+COPY . .
+
+RUN go build -o product-catalog .
+
+####################################
+
+FROM alpine AS release
+
+WORKDIR /usr/src/app/
+
+COPY ./products/ ./products/
+COPY --from=builder /usr/src/app/product-catalog/ ./
+
+ENV PRODUCT_CATALOG_PORT 8088
+ENTRYPOINT [ "./product-catalog" ]
+```
