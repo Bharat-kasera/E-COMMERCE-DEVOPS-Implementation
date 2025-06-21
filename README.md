@@ -283,3 +283,77 @@ ENV PRODUCT_CATALOG_PORT 8088
 ENTRYPOINT [ "./product-catalog" ]
 ```
 
+### Java-based Ad Service:
+
+**Prerequisites for Building Locally:**
+- Verify Java installation: `java -version`
+- If Java is not installed: `sudo apt install openjdk-21-jre-headless`
+- Grant permissions to Gradle wrapper: `chmod +x ./gradlew`
+
+**Building the Service:**
+1. Navigate to the Ad service directory: `cd /src/ad`
+2. The Ad service requires at least JDK 17 and uses Gradle wrapper for compilation
+3. Build the service:
+   ```bash
+   ./gradlew installDist
+   # or with proto source directory
+   ./gradlew installDist -PprotoSourceDir=./proto
+   ```
+4. This creates an executable script at `src/ad/build/install/oteldemo/bin/Ad`
+
+**Testing Locally:**
+```bash
+export AD_PORT=8080
+export FEATURE_FLAG_GRPC_SERVICE_ADDR=featureflagservice:50053
+./build/install/opentelemetry-demo-ad/bin/Ad
+```
+
+## 🏗️ Docker Setup - Ad Service
+
+**Multi-stage build** approach using `eclipse-temurin:21-jdk`:
+
+* The **first stage** uses the official `eclipse-temurin:21-jdk` image as the builder environment. It copies Gradle configuration files, downloads dependencies, and compiles the application using `./gradlew installDist`
+* The **final stage** uses the lighter `eclipse-temurin:21-jre` runtime image and copies the built application, keeping the container optimized for production
+
+The Dockerfile leverages Gradle wrapper for dependency management and build automation, ensuring consistent builds across different environments.
+
+### Dockerfile
+
+```dockerfile
+FROM eclipse-temurin:21-jdk AS builder
+
+WORKDIR /usr/src/app/
+
+COPY gradlew* settings.gradle* build.gradle .
+COPY ./gradle ./gradle
+
+RUN chmod +x ./gradlew
+RUN ./gradlew
+RUN ./gradlew downloadRepos
+
+COPY . .
+COPY ./pb ./proto
+RUN chmod +x ./gradlew
+RUN ./gradlew installDist -PprotoSourceDir=./proto
+
+#####################################################
+
+FROM eclipse-temurin:21-jre
+
+WORKDIR /usr/src/app/
+
+COPY --from=builder /usr/src/app/ ./
+
+ENV AD_PORT 9099
+
+ENTRYPOINT ["./build/install/opentelemetry-demo-ad/bin/Ad"]
+```
+
+**Build and Verify:**
+```bash
+# Build the Docker image
+docker build -t <your-dockerhub-username>/adservice .
+
+# Verify the container runs correctly
+docker run -p 9099:9099 <your-dockerhub-username>/adservice
+```
