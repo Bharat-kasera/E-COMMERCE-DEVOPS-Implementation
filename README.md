@@ -357,3 +357,306 @@ docker build -t <your-dockerhub-username>/adservice .
 # Verify the container runs correctly
 docker run -p 9099:9099 <your-dockerhub-username>/adservice
 ```
+### Python-based Recommendation Service:
+
+**Prerequisites for Building Locally:**
+- Verify Python installation: `python --version`
+- If Python is not installed: `sudo apt install python3 python3-pip`
+
+**Understanding the Service Structure:**
+1. Navigate to the Recommendation service directory: `cd /src/recommendation`
+2. The service uses `requirements.txt` for dependency management (similar to `pom.xml` in Java or `go.mod` in Go)
+3. Main application file: `recommendation_server.py`
+
+**Building the Service:**
+```bash
+# Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Run the service locally
+python recommendation_server.py
+```
+
+**Note:** If developer documentation is unavailable, analyze the code structure:
+- `requirements.txt` - Contains all Python dependencies
+- `recommendation_server.py` - Main application file
+- `metrics.py` - Observability metrics (can be ignored for basic setup)
+- `logger.py` - Logging configuration (can be ignored for basic setup)
+
+## 🏗️ Docker Setup - Recommendation Service
+
+**Single-stage build** approach using `python:3.12-slim-bookworm`:
+
+* Uses the official `python:3.12-slim-bookworm` image as the base environment
+* Installs dependencies using `pip install -r requirements.txt`
+* Directly executes the Python application without compilation (unlike Go/Java)
+
+The Dockerfile leverages Python's interpreted nature, allowing direct execution of source code without building binaries.
+
+### Dockerfile
+
+```dockerfile
+FROM python:3.12-slim-bookworm AS base
+
+WORKDIR /usr/src/app/
+
+# Copy requirements first for better layer caching
+COPY requirements.txt ./
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Copy the rest of the source code
+COPY . .
+
+ENTRYPOINT ["python", "recommendation_server.py"]
+```
+
+**Build and Verify:**
+```bash
+# Build the Docker image
+docker build -t <your-dockerhub-username>/recommendationservice .
+
+# Verify the container runs correctly
+docker run <your-dockerhub-username>/recommendationservice
+```
+### Python-based Recommendation Service:
+
+**Prerequisites for Building Locally:**
+- Verify Python installation: `python --version`
+- If Python is not installed: `sudo apt install python3 python3-pip`
+
+**Understanding the Service Structure:**
+1. Navigate to the Recommendation service directory: `cd /src/recommendation`
+2. The service uses `requirements.txt` for dependency management (similar to `pom.xml` in Java or `go.mod` in Go)
+3. Main application file: `recommendation_server.py`
+
+**Building the Service:**
+```bash
+# Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Run the service locally
+python recommendation_server.py
+```
+
+**Note:** If developer documentation is unavailable, analyze the code structure:
+- `requirements.txt` - Contains all Python dependencies
+- `recommendation_server.py` - Main application file
+- `metrics.py` - Observability metrics (can be ignored for basic setup)
+- `logger.py` - Logging configuration (can be ignored for basic setup)
+
+## 🏗️ Docker Setup - Recommendation Service
+
+**Single-stage build** approach using `python:3.12-slim-bookworm`:
+
+* Uses the official `python:3.12-slim-bookworm` image as the base environment
+* Installs dependencies using `pip install -r requirements.txt`
+* Directly executes the Python application without compilation (unlike Go/Java)
+
+The Dockerfile leverages Python's interpreted nature, allowing direct execution of source code without building binaries.
+
+### Dockerfile
+
+```dockerfile
+FROM python:3.12-slim-bookworm AS base
+
+WORKDIR /usr/src/app/
+
+# Copy requirements first for better layer caching
+COPY requirements.txt ./
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Copy the rest of the source code
+COPY . .
+
+ENTRYPOINT ["python", "recommendation_server.py"]
+```
+### Python-based Recommendation Service:
+
+**Prerequisites for Building Locally:**
+- Verify Python installation: `python --version`
+- If Python is not installed: `sudo apt install python3 python3-pip`
+
+**Understanding the Service Structure:**
+1. Navigate to the Recommendation service directory: `cd /src/recommendation`
+2. The service uses `requirements.txt` for dependency management (similar to `pom.xml` in Java or `go.mod` in Go)
+3. Main application file: `recommendation_server.py`
+
+**Building the Service:**
+```bash
+# Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Run the service locally
+python recommendation_server.py
+```
+
+**Note:** If developer documentation is unavailable, analyze the code structure:
+- `requirements.txt` - Contains all Python dependencies
+- `recommendation_server.py` - Main application file
+- `metrics.py` - Observability metrics (can be ignored for basic setup)
+- `logger.py` - Logging configuration (can be ignored for basic setup)
+
+## 🏗️ Docker Setup - Recommendation Service
+
+**Single-stage build** approach using `python:3.12-slim-bookworm`:
+
+* Uses the official `python:3.12-slim-bookworm` image as the base environment
+* Installs dependencies using `pip install -r requirements.txt`
+* Directly executes the Python application without compilation (unlike Go/Java)
+
+The Dockerfile leverages Python's interpreted nature, allowing direct execution of source code without building binaries.
+
+### Dockerfile
+
+```dockerfile
+FROM python:3.12-slim-bookworm AS base
+
+WORKDIR /usr/src/app/
+
+# Copy requirements first for better layer caching
+COPY requirements.txt ./
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Copy the rest of the source code
+COPY . .
+
+ENTRYPOINT ["python", "recommendation_server.py"]
+```
+
+**Build and Verify:**
+```bash
+# Build the Docker image
+docker build -t <your-dockerhub-username>/recommendationservice .
+
+# Verify the container runs correctly
+docker run <your-dockerhub-username>/recommendationservice
+```
+
+**Note:** Environment variables like `OTEL_SERVICE_NAME` may need to be configured when deploying. These will be automatically handled in Docker Compose or Kubernetes deployments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
